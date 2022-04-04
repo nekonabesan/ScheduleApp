@@ -1,12 +1,15 @@
-import React,{Fragment,useState,useEffect} from 'react'; //追加
+import React,{Fragment,useState,useEffect} from 'react';
 import ReactDOM from 'react-dom';
-import axios from 'axios'; //追加
+import axios from 'axios';
+import {zeroPadding} from './/common/Common';
+import Registerdis from './/register/Registerdis';
+import Updatedis from './/update/Updatedis';
  
 function Example(){
     const [year,setYear] = useState(new Date().getFullYear())
     const [month,setMonth] = useState(new Date().getMonth()+1)
-    const last = new Date(year,month,0).getDate() //追加
-    const prevlast = new Date(year,month-1,0).getDate() //追加
+    const last = new Date(year,month,0).getDate()
+    const prevlast = new Date(year,month-1,0).getDate()
     const calendar = createCalendear(year,month)
  
     const onClick = n => () => {
@@ -21,7 +24,7 @@ function Example(){
           setMonth(nextMonth)
         }
     }
-
+ 
     //スケジュールのデータ
     const [schedules,setSche] = useState([])
  
@@ -56,6 +59,59 @@ function Example(){
         })
     );
 
+    //登録用ポップアップ開閉処理
+    const[open,setOpen] = useState(false);
+
+    const handleClickOpen = (e) =>{
+        setOpen(true);
+    };
+
+    const handleClose = () =>{
+        setOpen(false);
+    };
+
+    //新規登録用データ配列
+    const [formData,setFormData] = useState({sch_category:'',sch_contents:'',sch_date:'',sch_hour:'',sch_min:''});
+ 
+    //更新用ダイアログ開閉機能
+    const[editopen,setEditOpen] = useState(false);
+
+    const editHandleClickOpen = (e) =>{
+        e.stopPropagation();
+        setEditOpen(true);
+        getEditData(e);
+    };
+
+    const editHandleClose = () =>{
+        setEditOpen(false);
+    };
+
+    //更新用のデータ配列
+    const [editData,setEditData] = useState({id:'',sch_category:'',sch_contents:'',sch_date:'',sch_hour:'',sch_min:''});
+ 
+    //バックエンドからデータ一覧を取得
+    function getEditData(e){
+        axios
+            .post('/api/edit', {
+                id: e.currentTarget.id
+            })
+            .then(res => {
+                setEditData({
+                    id:res.data.id,
+                    sch_category:res.data.sch_category,
+                    sch_contents:res.data.sch_contents,
+                    sch_date:res.data.sch_date,
+                    sch_hour:res.data.sch_time.substr(0,2),
+                    sch_min:res.data.sch_time.substr(3,2)
+                });
+            })
+            .catch(() => {
+                console.log('更新の通信に失敗しました');
+            });
+    }
+
+    console.log(editData);
+ 
     return (
         <Fragment>
             <div className="calender-header">
@@ -75,7 +131,7 @@ function Example(){
                     {calendar.map((week,i) => (
                         <tr key={week.join('')}>
                             {week.map((day,j) => (
-                                <td key={`${i}${j}`} id={day} >
+                                <td key={`${i}${j}`} id={day} onClick={handleClickOpen}>
                                     <div>
                                         <div>
                                             {day > last ? day - last : day <= 0 ? prevlast + day : day}
@@ -83,8 +139,9 @@ function Example(){
                                         <div className="schedule-area">
                                             {rows.map((schedule,k) => (
                                                 schedule.sch_date == year + '-' + zeroPadding(month) + '-' + zeroPadding(day) &&
-                                                <div className='schedule-title' key={k} id={schedule.sch_id}>{schedule.sch_contents}</div>
-                                                ))}
+                                                    <div className='schedule-title' key={k} onClick={editHandleClickOpen} id={schedule.sch_id}>{schedule.sch_contents}</div>
+
+                                            ))}
                                         </div>
                                     </div>
                                 </td>
@@ -93,6 +150,18 @@ function Example(){
                     ))}
                 </tbody>
             </table>
+            <Registerdis
+                open={open}
+                onClose={handleClose}
+                data = {formData}
+                setFormData = {setFormData}
+            />
+            <Updatedis
+                open={editopen}
+                onClose={editHandleClose}
+                data = {editData}
+                setEditData = {setEditData}
+            />
         </Fragment>
     );
 }
@@ -108,13 +177,8 @@ function createCalendear(year,month){
     })
 }
 
-
-function zeroPadding(num){
-    return ('0' + num).slice(-2);
-}
-
 export default Example;
- 
+
 if (document.getElementById('app')) {
     ReactDOM.render(<Example />, document.getElementById('app'));
 }
