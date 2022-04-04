@@ -26047,7 +26047,6 @@ function Example() {
     formData[key] = value;
     var datas = Object.assign({}, formData);
     setFormData(datas);
-    console.log(formData);
   }; //登録処理
 
 
@@ -26084,8 +26083,99 @@ function Example() {
     return function createSchedule() {
       return _ref.apply(this, arguments);
     };
+  }(); //更新用ダイアログ開閉機能
+
+
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
+      _useState12 = _slicedToArray(_useState11, 2),
+      editopen = _useState12[0],
+      setEditOpen = _useState12[1];
+
+  var editHandleClickOpen = function editHandleClickOpen(e) {
+    e.stopPropagation();
+    setEditOpen(true);
+    getEditData(e);
+  };
+
+  var editHandleClose = function editHandleClose() {
+    setEditOpen(false);
+  }; //更新用のデータ配列
+
+
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({
+    id: '',
+    sch_category: '',
+    sch_contents: '',
+    sch_date: '',
+    sch_hour: '',
+    sch_min: ''
+  }),
+      _useState14 = _slicedToArray(_useState13, 2),
+      editData = _useState14[0],
+      setEditData = _useState14[1]; //バックエンドからデータ一覧を取得
+
+
+  function getEditData(e) {
+    axios__WEBPACK_IMPORTED_MODULE_3___default().post('/api/edit', {
+      id: e.currentTarget.id
+    }).then(function (res) {
+      setEditData({
+        id: res.data.id,
+        sch_category: res.data.sch_category,
+        sch_contents: res.data.sch_contents,
+        sch_date: res.data.sch_date,
+        sch_hour: res.data.sch_time.substr(0, 2),
+        sch_min: res.data.sch_time.substr(3, 2)
+      });
+    })["catch"](function () {
+      console.log('更新の通信に失敗しました');
+    });
+  } //入力値を一時保存
+
+
+  var editChange = function editChange(e) {
+    var key = e.target.name;
+    var value = e.target.value;
+    editData[key] = value;
+    var datas = Object.assign({}, editData);
+    setEditData(datas);
+  }; //ダイアログデータを登録
+
+
+  var updateSchedule = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_3___default().post('/api/update', {
+                id: editData.id,
+                sch_category: editData.sch_category,
+                sch_contents: editData.sch_contents,
+                sch_date: editData.sch_date,
+                sch_time: editData.sch_hour + ':' + editData.sch_min
+              }).then(function (res) {
+                //戻り値をtodosにセット
+                setEditData(res.data);
+              })["catch"](function (error) {
+                console.log(error);
+              });
+
+            case 2:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+
+    return function updateSchedule() {
+      return _ref2.apply(this, arguments);
+    };
   }();
 
+  console.log(editData);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(react__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
       className: "calender-header",
@@ -26136,6 +26226,8 @@ function Example() {
                     children: rows.map(function (schedule, k) {
                       return schedule.sch_date == year + '-' + zeroPadding(month) + '-' + zeroPadding(day) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
                         className: "schedule-title",
+                        onClick: editHandleClickOpen,
+                        id: schedule.sch_id,
                         children: schedule.sch_contents
                       }, k);
                     })
@@ -26234,6 +26326,99 @@ function Example() {
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_Button__WEBPACK_IMPORTED_MODULE_14__["default"], {
           href: "/dashboard",
           onClick: createSchedule,
+          children: "Subscribe"
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_mui_material_Dialog__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      onClose: handleClose,
+      open: editopen,
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_DialogTitle__WEBPACK_IMPORTED_MODULE_6__["default"], {
+        children: "Subscribe"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_mui_material_DialogContent__WEBPACK_IMPORTED_MODULE_7__["default"], {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_DialogContentText__WEBPACK_IMPORTED_MODULE_8__["default"], {
+          children: "\u30B9\u30B1\u30B8\u30E5\u30FC\u30EB\u66F4\u65B0"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_9__["default"], {
+          margin: "dense",
+          id: "sch_date",
+          name: "sch_date",
+          label: "\u4E88\u5B9A\u65E5",
+          type: "text",
+          fullWidth: true,
+          variant: "standard",
+          value: editData.sch_date,
+          onChange: editChange
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_InputLabel__WEBPACK_IMPORTED_MODULE_10__["default"], {
+          id: "sch_time_label",
+          children: "\u6642\u523B"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_mui_material_Select__WEBPACK_IMPORTED_MODULE_11__["default"], {
+          labelId: "sch_hour",
+          id: "sch_hour_select",
+          name: "sch_hour",
+          label: "Hour",
+          variant: "standard",
+          value: editData.sch_hour,
+          onChange: editChange,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_12__["default"], {
+            value: "00",
+            children: "00"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_12__["default"], {
+            value: "01",
+            children: "01"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_mui_material_Select__WEBPACK_IMPORTED_MODULE_11__["default"], {
+          labelId: "sch_min",
+          id: "sch_min_select",
+          name: "sch_min",
+          label: "Min",
+          variant: "standard",
+          value: editData.sch_min,
+          onChange: editChange,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_12__["default"], {
+            value: "00",
+            children: "00"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_12__["default"], {
+            value: "01",
+            children: "01"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_InputLabel__WEBPACK_IMPORTED_MODULE_10__["default"], {
+          id: "sch_category",
+          children: "\u30AB\u30C6\u30B4\u30EA\u30FC"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_mui_material_Select__WEBPACK_IMPORTED_MODULE_11__["default"], {
+          labelId: "sch_category",
+          id: "sch_category_select",
+          name: "sch_category",
+          label: "Category",
+          variant: "standard",
+          value: editData.sch_category,
+          onChange: editChange,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_12__["default"], {
+            value: "\u52C9\u5F37",
+            children: "\u52C9\u5F37"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_12__["default"], {
+            value: "\u6848\u4EF6",
+            children: "\u6848\u4EF6"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_MenuItem__WEBPACK_IMPORTED_MODULE_12__["default"], {
+            value: "\u30C6\u30B9\u30C8",
+            children: "\u30C6\u30B9\u30C8"
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_9__["default"], {
+          margin: "dense",
+          id: "sch_contents",
+          name: "sch_contents",
+          label: "\u5185\u5BB9",
+          type: "text",
+          fullWidth: true,
+          variant: "standard",
+          value: editData.sch_contents,
+          onChange: editChange
+        })]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_mui_material_DialogActions__WEBPACK_IMPORTED_MODULE_13__["default"], {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_Button__WEBPACK_IMPORTED_MODULE_14__["default"], {
+          onClick: editHandleClose,
+          children: "Cancel"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_Button__WEBPACK_IMPORTED_MODULE_14__["default"], {
+          href: "/dashboard",
+          onClick: updateSchedule,
           children: "Subscribe"
         })]
       })]

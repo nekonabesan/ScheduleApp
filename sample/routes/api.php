@@ -23,4 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['middleware'=>'api'],function(){
     Route::post('posts','App\Http\Controllers\Api\ScheduleController@scheduleindex');
     Route::post('posts/create','App\Http\Controllers\Api\ScheduleController@create'); //追加
+    Route::post('edit','App\Http\Controllers\Api\ScheduleController@edit');  //追記
+    Route::post('update','App\Http\Controllers\Api\ScheduleController@update');  //追記
 });
