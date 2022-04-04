@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+// 追加
+Route::group(['middleware'=>'api'],function(){
+    Route::post('posts','App\Http\Controllers\Api\ScheduleController@scheduleindex');
+});
