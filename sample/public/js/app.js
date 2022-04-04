@@ -25951,6 +25951,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 function Example() {
+  var _this = this;
+
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(new Date().getFullYear()),
       _useState2 = _slicedToArray(_useState, 2),
       year = _useState2[0],
@@ -26172,6 +26174,37 @@ function Example() {
 
     return function updateSchedule() {
       return _ref2.apply(this, arguments);
+    };
+  }(); //削除処理
+
+
+  var deletePost = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(post) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_3___default().post('api/delete', {
+                id: editData.id
+              }).then(function (res) {
+                _this.setState({
+                  posts: res.posts
+                });
+              })["catch"](function (error) {
+                console.log(error);
+              });
+
+            case 2:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }));
+
+    return function deletePost(_x) {
+      return _ref3.apply(this, arguments);
     };
   }();
 
@@ -26414,6 +26447,10 @@ function Example() {
         })]
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)(_mui_material_DialogActions__WEBPACK_IMPORTED_MODULE_13__["default"], {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_Button__WEBPACK_IMPORTED_MODULE_14__["default"], {
+          href: "/dashboard",
+          onClick: deletePost,
+          children: "Delete"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_Button__WEBPACK_IMPORTED_MODULE_14__["default"], {
           onClick: editHandleClose,
           children: "Cancel"
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_mui_material_Button__WEBPACK_IMPORTED_MODULE_14__["default"], {

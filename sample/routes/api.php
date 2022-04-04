@@ -25,4 +25,5 @@ Route::group(['middleware'=>'api'],function(){
     Route::post('posts/create','App\Http\Controllers\Api\ScheduleController@create'); //追加
     Route::post('edit','App\Http\Controllers\Api\ScheduleController@edit');  //追記
     Route::post('update','App\Http\Controllers\Api\ScheduleController@update');  //追記
+    Route::post('delete','App\Http\Controllers\Api\ScheduleController@delete'); //追記
 });

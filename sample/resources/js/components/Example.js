@@ -175,6 +175,23 @@ function Example(){
                 console.log(error);
             })
     }
+
+    
+    //削除処理
+    const deletePost = async(post) =>{
+        await axios
+        .post('api/delete',{
+            id:editData.id
+        })
+        .then((res)=>{
+        this.setState({
+            posts:res.posts
+        });
+        })
+        .catch(error=>{
+            console.log(error);
+        });
+    }
  
     
     console.log(editData);
@@ -267,6 +284,7 @@ function Example(){
                 <TextField margin="dense" id="sch_contents" name="sch_contents" label="内容" type="text" fullWidth variant="standard"  value={editData.sch_contents} onChange={editChange}/>
             </DialogContent>
             <DialogActions>
+                <Button href="/dashboard" onClick={deletePost}>Delete</Button>
                 <Button onClick={editHandleClose}>Cancel</Button>
                 <Button href="/dashboard" onClick={updateSchedule}>Subscribe</Button>
             </DialogActions>
