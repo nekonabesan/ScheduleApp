@@ -1,7 +1,7 @@
 <?php
 /**
  * WSL2のShellからdockerのshellへログイン
- * docker container exec -it  sample_laravel.test_1 bash
+ * docker container exec -it sample_laravel.test_1 bash
  * php artisan test tests/Feature/ScheduleTest.php
  * を実行する事
  */
@@ -66,6 +66,6 @@ class ScheduleTest extends TestCase
             ScheduleSeeder::class,
         ]);
 
-        $this->assertDatabaseCount('schedules', 1);
+        $this->assertDatabaseCount('schedules', 3);
     }
 }
